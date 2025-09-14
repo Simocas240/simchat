@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimChat</title>
+    <style>
+        /* AQUI COMEÇA O CSS */
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+
+        .login-container {
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-container h2 {
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 25px;
+        }
+        
+        #login-form input {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+            width: 280px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        #login-form button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            margin-top: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        #login-form button:hover {
+            background-color: #0056b3;
+        }
+
+        .main-app-container {
+            display: flex;
+            width: 95%;
+            max-width: 1000px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            height: 90vh;
+        }
+
+        .conversations-container {
+            width: 300px;
+            background-color: #f7f9fc;
+            border-right: 1px solid #eee;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .conversations-container h3 {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        #new-chat-container {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        #new-chat-email {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 20px 0 0 20px;
+            outline: none;
+        }
+
+        #new-chat-button {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 0 20px 20px 0;
+            cursor: pointer;
+        }
+
+        .conversation-item {
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 8px;
+            background-color: #fff;
+        }
+
+        .conversation-item:hover, .conversation-item.active {
+            background-color: #e2f0ff;
+        }
+
+        .chat-main-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 15px 20px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header h4 {
+            margin: 0;
+        }
+        
+        #logout-button {
+            background-color: #ff5c5c;
+            color: #fff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        #logout-button:hover {
+            background-color: #d84343;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 12px;
+            border-radius: 18px;
+            word-wrap: break-word;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .sent {
+            background-color: #e2f0ff;
+            align-self: flex-end;
+            color: #0056b3;
+            border-bottom-right-radius: 0;
+        }
+        
+        .received {
+            background-color: #f0f0f0;
+            align-self: flex-start;
+            color: #333;
+            border-bottom-left-radius: 0;
+        }
+
+        .chat-input-container {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #ddd;
+        }
+
+        .chat-input {
+            flex-grow: 1;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 25px;
+            outline: none;
+        }
+
+        .send-button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .send-button:hover {
+            background-color: #0056b3;
+        }
+        /* AQUI TERMINA O CSS */
+    </style>
+</head>
+<body>
+
+<div class="login-container" id="login-form" style="display: none;">
+    <h2>Bem-vindo ao SimChat</h2>
+    <input type="email" id="user-email" placeholder="Email">
+    <input type="password" id="user-password" placeholder="Senha">
+    <button id="signup-button">Criar Conta</button>
+    <button id="login-button">Entrar</button>
+</div>
+
+<div class="main-app-container" id="main-app" style="display: none;">
+    <div class="conversations-container">
+        <div id="new-chat-container">
+            <input type="email" id="new-chat-email" placeholder="Email da pessoa">
+            <button id="new-chat-button">Novo Chat</button>
+        </div>
+        <h3>Tuas Conversas</h3>
+        <div id="conversations-list">
+            </div>
+    </div>
+    <div class="chat-main-container">
+        <div class="chat-header">
+            <h4 id="recipient-name">Seleciona uma conversa...</h4>
+            <button id="logout-button">Sair</button>
+        </div>
+        <div class="chat-messages" id="messages-container">
+            </div>
+        <div class="chat-input-container">
+            <input type="text" id="message-input" placeholder="Escreve a tua mensagem...">
+            <button class="send-button" id="send-button">Enviar</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+<script>
+    // AVISO: SUBSTITUI ESTE CÓDIGO PELAS TUAS CHAVES FIREBASE
+	const firebaseConfig = {
+		apiKey: "AIzaSyBI_80I4f37Zg4CaOAXDDAaoYSHrLk5Ekw",
+		authDomain: "simchat1.firebaseapp.com",
+		projectId: "simchat1",
+		storageBucket: "simchat1.firebasestorage.app",
+		messagingSenderId: "29724373271",
+	appId: "1:29724373271:web:b8807fb606786449ddc752"
+	};
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    const loginForm = document.getElementById('login-form');
+    const userEmailInput = document.getElementById('user-email');
+    const userPasswordInput = document.getElementById('user-password');
+    const signupButton = document.getElementById('signup-button');
+    const loginButton = document.getElementById('login-button');
+    const logoutButton = document.getElementById('logout-button');
+    const mainApp = document.getElementById('main-app');
+
+    const newChatEmailInput = document.getElementById('new-chat-email');
+    const newChatButton = document.getElementById('new-chat-button');
+    const conversationsListContainer = document.getElementById('conversations-list');
+    const recipientNameHeader = document.getElementById('recipient-name');
+    const messagesContainer = document.getElementById('messages-container');
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-button');
+
+    let currentUserId = null;
+    let currentUserEmail = null;
+    let recipientEmail = null;
+    let conversationId = null;
+    let unsubscribeFromMessages = null;
+
+    // Funções de Autenticação
+    signupButton.addEventListener('click', () => {
+        const email = userEmailInput.value;
+        const password = userPasswordInput.value;
+        auth.createUserWithEmailAndPassword(email, password)
+            .then(userCredential => {
+                const user = userCredential.user;
+                db.collection("users").doc(user.uid).set({
+                    email: user.email,
+                });
+            })
+            .catch(error => alert(error.message));
+    });
+
+    loginButton.addEventListener('click', () => {
+        const email = userEmailInput.value;
+        const password = userPasswordInput.value;
+        auth.signInWithEmailAndPassword(email, password)
+            .catch(error => alert(error.message));
+    });
+
+    logoutButton.addEventListener('click', () => {
+        auth.signOut();
+    });
+
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            currentUserId = user.uid;
+            currentUserEmail = user.email;
+            loginForm.style.display = 'none';
+            mainApp.style.display = 'flex';
+            getConversations();
+        } else {
+            currentUserId = null;
+            currentUserEmail = null;
+            recipientEmail = null;
+            conversationId = null;
+            if (unsubscribeFromMessages) {
+                unsubscribeFromMessages();
+            }
+            loginForm.style.display = 'block';
+            mainApp.style.display = 'none';
+        }
+    });
+
+    // Funções para lidar com as conversas e mensagens
+    newChatButton.addEventListener('click', () => {
+        const email = newChatEmailInput.value.trim();
+        if (email && email !== currentUserEmail) {
+            startChatWithEmail(email);
+        } else {
+            alert("Por favor, insere um email válido e diferente do teu.");
+        }
+    });
+
+    sendButton.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+    
+    function startChatWithEmail(email) {
+        db.collection("users").where("email", "==", email).get().then(snapshot => {
+            if (snapshot.empty) {
+                alert("Utilizador com este email não encontrado.");
+                return;
+            }
+            const recipientUser = snapshot.docs[0];
+            const recipientId = recipientUser.id;
+            
+            // Cria um ID de conversa ordenado
+            conversationId = getConversationId(currentUserId, recipientId);
+            recipientEmail = email;
+            recipientNameHeader.textContent = `A conversar com ${email}`;
+            
+            // Cria a conversa se não existir
+            db.collection("conversations").doc(conversationId).set({
+                participants: [currentUserEmail, recipientEmail],
+                participantIds: [currentUserId, recipientId]
+            }, { merge: true })
+            .then(() => {
+                // Carrega as mensagens da nova conversa
+                loadMessages(conversationId);
+            });
+        });
+    }
+
+    function getConversationId(userId1, userId2) {
+        return userId1 < userId2 ? `${userId1}_${userId2}` : `${userId2}_${userId1}`;
+    }
+
+    function sendMessage() {
+        if (!conversationId || !currentUserEmail) return;
+
+        const text = messageInput.value.trim();
+        if (text === "") return;
+
+        db.collection("conversations").doc(conversationId).collection("messages").add({
+            text: text,
+            sender: currentUserEmail,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        })
+        .then(() => {
+            messageInput.value = "";
+            console.log("Mensagem enviada!");
+        })
+        .catch(error => {
+            console.error("Erro ao enviar mensagem: ", error);
+        });
+    }
+
+    function loadMessages(conversationId) {
+        if (unsubscribeFromMessages) {
+            unsubscribeFromMessages();
+        }
+        
+        unsubscribeFromMessages = db.collection("conversations").doc(conversationId).collection("messages").orderBy("timestamp").onSnapshot(snapshot => {
+            messagesContainer.innerHTML = '';
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                if (data.timestamp) {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.classList.add('message');
+                    messageDiv.classList.add(data.sender === currentUserEmail ? 'sent' : 'received');
+                    const senderName = data.sender === currentUserEmail ? "Tu" : data.sender.split('@')[0];
+                    messageDiv.innerHTML = `<strong>${senderName}:</strong> ${data.text}`;
+                    messagesContainer.appendChild(messageDiv);
+                }
+            });
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        });
+    }
+
+    function getConversations() {
+        if (!currentUserEmail) return;
+        
+        db.collection("conversations").where("participants", "array-contains", currentUserEmail).onSnapshot(snapshot => {
+            conversationsListContainer.innerHTML = '';
+            
+            if (snapshot.empty) {
+                conversationsListContainer.innerHTML = "<p style='padding: 15px; color: #888;'>Ainda não tens conversas.</p>";
+            } else {
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const otherUserEmail = data.participants.find(email => email !== currentUserEmail);
+                    if (otherUserEmail) {
+                        const conversationItem = document.createElement('div');
+                        conversationItem.classList.add('conversation-item');
+                        conversationItem.textContent = otherUserEmail;
+                        
+                        conversationItem.addEventListener('click', () => {
+                            document.querySelectorAll('.conversation-item').forEach(item => item.classList.remove('active'));
+                            conversationItem.classList.add('active');
+                            
+                            startChatWithEmail(otherUserEmail);
+                        });
+                        conversationsListContainer.appendChild(conversationItem);
+                    }
+                });
+            }
+        }, error => {
+            console.error("Erro ao obter conversas:", error);
+        });
+    }
+</script>
+</body>
+</html>
