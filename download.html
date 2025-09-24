@@ -2,13 +2,82 @@
 <html>
   <head>
     <title>SimChat - Download</title>
-    <meta charset="UTF-8"/>
+    <meta charset="UTF-8" />
+    <style>
+      /* AQUI COMEÇA O CSS */
+      body {
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background-color: #f0f2f5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        color: #333;
+      }
+
+      .download-container {
+        padding: 40px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        max-width: 500px;
+        width: 90%;
+      }
+
+      .download-container h1 {
+        color: #007bff;
+        margin-bottom: 20px;
+      }
+
+      .download-container h3 {
+        color: #555;
+        margin-bottom: 30px;
+      }
+
+      .download-container a {
+        display: inline-block;
+        background-color: #28a745;
+        color: #fff;
+        text-decoration: none;
+        padding: 12px 25px;
+        border-radius: 25px;
+        transition: background-color 0.3s ease;
+        margin-bottom: 20px;
+      }
+
+      .download-container a:hover {
+        background-color: #218838;
+      }
+
+      .download-container p {
+        color: #666;
+        margin-top: 20px;
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 20px;
+          height: auto;
+        }
+
+        .download-container {
+          padding: 30px 20px;
+        }
+      }
+      /* AQUI TERMINA O CSS */
+    </style>
   </head>
   <body>
-    <!-- Todo o conteúdo visível da página vai aqui -->
-    <h1>Download</h1>
-    <h3>Esta é a página de download do SimChat</h3>
-    <a href="https://github.com/Simocas240/simchat/raw/refs/heads/main/SimChat.apk">Applicação para Android</a>
-    <p>Brevemente no Windows!</p>
+    <div class="download-container">
+      <h1>Download</h1>
+      <h3>Esta é a página de download do SimChat</h3>
+      <a href="https://github.com/Simocas240/simchat/raw/refs/heads/main/SimChat.apk">
+        Applicação para Android
+      </a>
+      <p>Brevemente no Windows!</p>
+    </div>
   </body>
 </html>
+
